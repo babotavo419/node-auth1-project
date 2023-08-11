@@ -5,6 +5,7 @@ const session = require('express-session');
 const KnexSessionStore = require('connect-session-knex')(session);
 const dbConfig = require("../data/db-config");
 const authRouter = require('./auth/auth-router'); // Import the authRouter
+const usersRouter = require('./users/users-router'); // Import the usersRouter
 const server = express();
 
 const sessionConfig = {
@@ -31,6 +32,7 @@ server.use(express.json());
 server.use(cors());
 server.use(session(sessionConfig));
 server.use('/api/auth', authRouter);  // Use the authRouter for authentication routes
+server.use('/api/users', usersRouter);
 
 server.get("/", (req, res) => {
   res.json({ api: "up" });
