@@ -23,19 +23,19 @@ async function checkUsernameFree(req, res, next) {
     }
 }
 
-// Check if username exists
+// Check if username exists and has necessary properties
 async function checkUsernameExists(req, res, next) {
-    try {
-        const users = await Users.findBy({ username: req.body.username });
-        if (!users.length) {
-            res.status(401).json({ message: "Invalid credentials" });
-        } else {
-            req.userData = users[0];
-            next();
-        }
-    } catch (err) {
-        next(err);
-    }
+  try {
+      const users = await Users.findBy({ username: req.body.username });
+      if (!users.length || !users[0].password || !users[0].username) {
+          res.status(401).json({ message: "Invalid credentials" });
+      } else {
+          req.userData = users[0];
+          next();
+      }
+  } catch (err) {
+      next(err);
+  }
 }
 
 // Check password length

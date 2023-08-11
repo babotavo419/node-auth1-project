@@ -17,7 +17,11 @@ router.post('/register',
             const hashedPassword = bcrypt.hashSync(password, 10); // hashing password with a salt of 10 rounds
             const newUser = await Users.add({ username, password: hashedPassword });
 
-            res.status(200).json(newUser);
+            // Return only user_id and username.
+            res.status(200).json({
+                user_id: newUser.user_id,
+                username: newUser.username
+            });
         } catch (err) {
             next(err);
         }
@@ -28,6 +32,11 @@ router.post('/login',
     checkUsernameExists, 
     (req, res, next) => {
         const { password } = req.body;
+
+        // Ensure req.userData is defined and contains the password.
+        if (!req.userData || !req.userData.password) {
+            return res.status(500).json({ message: 'Internal server error.' });
+        }
 
         // check if the provided password matches the one in the database
         if (bcrypt.compareSync(password, req.userData.password)) {
@@ -49,7 +58,7 @@ router.get('/logout', (req, res) => {
             }
         });
     } else {
-        res.status(200).json({ message: 'no session' });
+        res.status(401).json({ message: 'no session' }); // Changed status to 401 as there's no session
     }
 });
 
