@@ -1,25 +1,34 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-
-/**
-  Do what needs to be done to support sessions with the `express-session` package!
-  To respect users' privacy, do NOT send them a cookie unless they log in.
-  This is achieved by setting 'saveUninitialized' to false, and by not
-  changing the `req.session` object unless the user authenticates.
-
-  Users that do authenticate should have a session persisted on the server,
-  and a cookie set on the client. The name of the cookie should be "chocolatechip".
-
-  The session can be persisted in memory (would not be adecuate for production)
-  or you can use a session store like `connect-session-knex`.
- */
-
+const session = require('express-session'); 
+const KnexSessionStore = require('connect-session-knex')(session);
+const dbConfig = require("../data/db-config");
 const server = express();
+
+const sessionConfig = {
+  name: 'chocolatechip',
+  secret: 'keep it secret, keep it safe', // Used to sign the cookie
+  cookie: {
+    maxAge: 1000 * 60 * 60, // 1 hour in milliseconds
+    secure: false, // set to true in production, only send cookie over HTTPS
+    httpOnly: true, // JS cannot access the cookie on the client
+  },
+  resave: false, // Avoid recreating unchanged sessions
+  saveUninitialized: false, // GDPR laws against setting cookies automatically
+  store: new KnexSessionStore({
+    knex: dbConfig, // configured instance of knex
+    tablename: 'sessions', // table to create to store sessions
+    sidfieldname: 'sid', // column that will hold the session id
+    createtable: true, // if the table does not exist, it will create it automatically
+    clearInterval: 1000 * 60 * 60, // remove expired sessions
+  }),
+};
 
 server.use(helmet());
 server.use(express.json());
 server.use(cors());
+server.use(session(sessionConfig));
 
 server.get("/", (req, res) => {
   res.json({ api: "up" });
