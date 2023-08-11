@@ -4,6 +4,7 @@ const cors = require("cors");
 const session = require('express-session'); 
 const KnexSessionStore = require('connect-session-knex')(session);
 const dbConfig = require("../data/db-config");
+const authRouter = require('./auth/auth-router'); // Import the authRouter
 const server = express();
 
 const sessionConfig = {
@@ -29,6 +30,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(cors());
 server.use(session(sessionConfig));
+server.use('/api/auth', authRouter);  // Use the authRouter for authentication routes
 
 server.get("/", (req, res) => {
   res.json({ api: "up" });
@@ -42,3 +44,4 @@ server.use((err, req, res, next) => { // eslint-disable-line
 });
 
 module.exports = server;
+
