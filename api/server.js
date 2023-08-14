@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const session = require('express-session'); 
 const KnexSessionStore = require('connect-session-knex')(session);
-const dbConfig = require("../data/db-config");
+const knex = require("../data/db-config");
 const authRouter = require('./auth/auth-router'); // Import the authRouter
 const usersRouter = require('./users/users-router'); // Import the usersRouter
 const server = express();
@@ -19,7 +19,7 @@ const sessionConfig = {
   resave: false, // Avoid recreating unchanged sessions
   saveUninitialized: false, // GDPR laws against setting cookies automatically
   store: new KnexSessionStore({
-    knex: dbConfig, // configured instance of knex
+    knex: db-Config, // configured instance of knex
     tablename: 'sessions', // table to create to store sessions
     sidfieldname: 'sid', // column that will hold the session id
     createtable: true, // if the table does not exist, it will create it automatically
