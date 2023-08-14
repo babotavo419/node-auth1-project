@@ -19,7 +19,7 @@ const sessionConfig = {
   resave: false, // Avoid recreating unchanged sessions
   saveUninitialized: false, // GDPR laws against setting cookies automatically
   store: new KnexSessionStore({
-    knex: db-Config, // configured instance of knex
+    knex: dbConfig, // configured instance of knex
     tablename: 'sessions', // table to create to store sessions
     sidfieldname: 'sid', // column that will hold the session id
     createtable: true, // if the table does not exist, it will create it automatically
