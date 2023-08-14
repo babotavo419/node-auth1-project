@@ -49,7 +49,7 @@ router.post('/login',
 
 // [GET] /api/auth/logout
 router.get('/logout', (req, res, next) => {
-    if (req.session) {
+    if (req.session.user) {
         req.session.destroy(err => {
             if (err) {
                 res.json({ message: 'You cannot log out at the moment.' });
