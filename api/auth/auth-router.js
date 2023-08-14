@@ -18,9 +18,8 @@ router.post('/register',
             const newUser = await Users.add({ username, password: hashedPassword });
 
             // Return only user_id and username.
-            res.status(200).json({
-                user_id: newUser.user_id,
-                username: newUser.username
+            res.status(201).json({
+                saved
             });
         } catch (err) {
             next(err);
@@ -52,7 +51,7 @@ router.get('/logout', (req, res, next) => {
     if (req.session.user) {
         req.session.destroy(err => {
             if (err) {
-                res.status(500).json({ message: 'You cannot log out at the moment.' }); // Set status to 500 to indicate a server error
+                res.status(500).json({ message: 'You cannot log out at the moment.' });
             } else {
                 res.status(200).json({ message: 'logged out' });
             }
