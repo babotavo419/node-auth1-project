@@ -11,10 +11,10 @@ function restricted(req, res, next) {
 async function checkUsernameFree(req, res, next) {
   try {
       const users = await Users.findBy({ username: req.body.username });
-      if (users.length) {
-          res.status(422).json({ message: "Username taken" });
-      } else {
+      if (!users.length) {
           next();
+      } else {
+        res.status(422).json({ message: "Username taken" });
       }
   } catch (err) {
       next(err);
@@ -24,11 +24,11 @@ async function checkUsernameFree(req, res, next) {
 async function checkUsernameExists(req, res, next) {
   try {
       const users = await Users.findBy({ username: req.body.username });
-      if (!users.length) {
-          res.status(401).json({ message: "Invalid credentials" });
+      if (users.length) {
+        req.user = users[0];
+        next();
       } else {
-          req.user = users[0];
-          next();
+         res.status(401).json({ message: "Invalid credentials" });
       }
   } catch (err) {
       next(err);

@@ -16,7 +16,6 @@ router.post('/register',
             const { username, password } = req.body;
             const hashedPassword = bcrypt.hashSync(password, 10); // hashing password with a salt of 10 rounds
             const newUser = await Users.add({ username, password: hashedPassword });
-
             // Return only user_id and username.
             res.status(201).json({
                 saved
@@ -31,16 +30,10 @@ router.post('/login',
     checkUsernameExists, 
     (req, res, next) => {
         const { password } = req.body;
-
-        // Ensure req.user is defined and contains the password.
-        if (!req.user || !req.user.password) {
-            return res.status(500).json({ message: 'Internal server error.' });
-        }
-
         // check if the provided password matches the one in the database
         if (bcrypt.compareSync(password, req.user.password)) {
             req.session.user = req.user;
-            res.status(200).json({ message: `Welcome ${req.user.username}!` });
+            res.json({ message: `Welcome ${req.user.username}!` });
         } else {
             res.status(401).json({ message: 'Invalid credentials' });
         }
