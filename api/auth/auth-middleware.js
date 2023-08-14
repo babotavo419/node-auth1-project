@@ -30,7 +30,7 @@ async function checkUsernameExists(req, res, next) {
       if (!users.length || !users[0].password || !users[0].username) {
           res.status(401).json({ message: "Invalid credentials" });
       } else {
-          req.userData = users[0];
+          req.user = users[0];
           next();
       }
   } catch (err) {
