@@ -16,7 +16,7 @@ router.post('/register',
             const hashedPassword = bcrypt.hashSync(password, 10); // hashing password with a salt of 10 rounds
 
             Users.add({ username, password: hashedPassword });
-            res.status(201).json(saved)
+            res.status(201).json(newUser)
         .catch(next)
   
     });
