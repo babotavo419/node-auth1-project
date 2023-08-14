@@ -11,18 +11,14 @@ const {
 router.post('/register', 
     checkUsernameFree, 
     checkPasswordLength, 
-    async (req, res, next) => {
-        try {
+    (req, res, next) => {
             const { username, password } = req.body;
             const hashedPassword = bcrypt.hashSync(password, 10); // hashing password with a salt of 10 rounds
-            const newUser = await Users.add({ username, password: hashedPassword });
-            // Return only user_id and username.
-            res.status(201).json({
-                saved
-            });
-        } catch (err) {
-            next(err);
-        }
+
+            Users.add({ username, password: hashedPassword });
+            res.status(201).json(saved)
+        .catch(next)
+  
     });
 
 // [POST] /api/auth/login
