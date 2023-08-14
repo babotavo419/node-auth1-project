@@ -33,7 +33,7 @@ router.post('/login',
     (req, res, next) => {
         const { password } = req.body;
 
-        // Ensure req.userData is defined and contains the password.
+        // Ensure req.user is defined and contains the password.
         if (!req.user || !req.user.password) {
             return res.status(500).json({ message: 'Internal server error.' });
         }
@@ -52,15 +52,14 @@ router.get('/logout', (req, res, next) => {
     if (req.session.user) {
         req.session.destroy(err => {
             if (err) {
-                res.json({ message: 'You cannot log out at the moment.' });
+                res.status(500).json({ message: 'You cannot log out at the moment.' }); // Set status to 500 to indicate a server error
             } else {
                 res.status(200).json({ message: 'logged out' });
             }
         });
     } else {
-        res.status(401).json({ message: 'no session' }); // Changed status to 401 as there's no session
+        res.status(401).json({ message: 'no session' });
     }
 });
 
 module.exports = router;
-
